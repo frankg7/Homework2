@@ -1,0 +1,104 @@
+Sub Total_Volume_Finder():
+
+  ' Set an initial variable for holding the ticker name
+  Dim Ticker As String
+  
+  ' Set initial variable for holding the yearly change
+  Dim yearly_change As Double
+  
+  ' Set variable for percentage change
+  Dim percentage_change As Double
+  
+  ' Set Open Status
+  Dim Opening_Price_Set As Boolean
+  
+  ' Set Opening_Price
+  Dim Opening_Price As Double
+  
+  ' Set Closing_Price
+  Dim Closing_Value As Double
+
+  ' Set an initial variable for holding the total stock volume
+  Dim Stock_Volume As Double
+  Stock_Volume = 0
+
+  ' Keep track of the location for each ticker in the summary table
+  Dim Summary_Table_Row As Integer
+  Summary_Table_Row = 2
+  
+  ' Find last row
+  Dim LastRow As Double
+  LastRow = Range("A" & Rows.Count).End(xlUp).Row
+  
+  ' Labels for my table
+  
+  Cells(1, 9).Value = "Ticker"
+  Cells(1, 10).Value = "Yearly Change"
+  Cells(1, 11).Value = "Percent Change"
+  Cells(1, 12).Value = "Total Stock Volume"
+
+  ' Loop through all ticker and volumes
+  For i = 2 To LastRow
+
+    ' Check if we are still within the same ticker, if it is not...
+    If Cells(i + 1, 1).Value <> Cells(i, 1).Value Then
+
+      ' Set the ticker name
+      Ticker = Cells(i, 1).Value
+      
+      ' Set the closing value
+      Closing_Value = Cells(i, 6).Value
+      
+      ' Set yearly change
+      yearly_change = Closing_Value - Opening_Price
+      
+      ' Set Percentage Change
+      percentage_change = yearly_change / Opening_Price
+      
+      ' Add to the total volume
+      Stock_Volume = Stock_Volume + Cells(i, 7).Value
+
+      ' Print the ticker in the Summary Table
+      Range("I" & Summary_Table_Row).Value = Ticker
+      
+      ' Print the yearly change in the Summary Table
+      Range("J" & Summary_Table_Row).Value = yearly_change
+
+      if yearly_change > 0 Then
+        cell.Interior.ColorIndex = 4
+
+      else Then
+        cell.Interior.ColorIndex = 3
+      
+      ' Print the yearly change in the Summary Table
+      Range("K" & Summary_Table_Row).Value = percentage_change
+      
+      ' Print the total stock volume to the Summary Table
+      Range("L" & Summary_Table_Row).Value = Stock_Volume
+
+      ' Add one to the summary table row
+      Summary_Table_Row = Summary_Table_Row + 1
+      
+      ' Reset the Brand Total
+      Stock_Volume = 0
+      
+      ' Reset the Opening Price
+      Opening_Price_Set = False
+
+    ' If the cell immediately following a row is the same brand...
+    Else
+
+      ' Add to the Brand Total
+      Stock_Volume = Stock_Volume + Cells(i, 7).Value
+      
+      While Opening_Price_Set = False
+        Opening_Price = Cells(i, 3).Value
+        Opening_Price_Set = True
+
+      Wend
+
+    End If
+    
+  Next i
+
+End Sub
